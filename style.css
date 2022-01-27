@@ -1,0 +1,27 @@
+.topnav {
+  overflow: hidden;
+  background-color: #e9e9e9;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.container {
+  display: block;
+  align-content: center;
+  margin-top: 35vh;
+}
+factFindr {
+  margin-left: 10vw;
+  margin-bottom: 5vh;
+  font-size: 50pt;
+  align-self: center;
+  display: flex;
+}
+.searchbar {
+  display: flex;
+
+  align-self: center;
+  width: 40vw;
+  height: 5vh;
+}
