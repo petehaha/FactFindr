@@ -22,6 +22,27 @@ factFindr {
   display: flex;
 
   align-self: center;
-  width: 40vw;
+  width: 60vw;
   height: 5vh;
+}
+form {
+  display: flex;
+  align-self: center;
+  margin-left: 25vw;
+  /*margin-top: 40vh;*/
+  width: 50vw;
+}
+input {
+  width: 50vw;
+}
+p {
+  padding-left: 32vw;
+  padding-top: 5vh;
+  padding-bottom: 2vh;
+  font-size: 30pt;
+  font-weight: bold;
+  color: darkred;
+}
+svg {
+  padding-left: 35vw;
 }
