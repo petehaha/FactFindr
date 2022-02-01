@@ -3,7 +3,7 @@
         <head>
             <meta charset="UTF-8">
             <title>Fact Findr</title>
-            <link rel="stylesheet" href="../style.css">
+            <link rel="stylesheet" href="../static/styles/style.css">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
         </head>
         <body>
@@ -34,10 +34,15 @@
                     </g>
                     </svg>
                 <p> For those who seek the <em>truth</em></p>
-                <form method="GET" >           
-                    <input type="search" name="button1" placeholder="Type your question here">               
+                <form method="POST" >
+                    <input type="text" name="search_query" placeholder="Type your question here">
                     <button>Search</button>
                 </form>
+                {% if search_query %}
+                  Search Returns: {{ search_query }}!
+                {% else %}
+                  \n
+                {% endif %}
             </section>
         </body>
     </html>

@@ -1,5 +1,7 @@
-from flask import Flask
-from flask import render_template
+# -*- coding: utf-8 -*-
+
+from flask import Flask, request, render_template
+from jumbodb import Jumbo
 import random
 import json
 import requests
@@ -12,19 +14,34 @@ app = Flask(__name__, template_folder='templates')
 # some global variables #
 #########################
 
-quotes = (
-    '“We May Encounter Many Defeats But We Must Not Be Defeated.” – Maya Angelou',
-    '“The Way Get Started Is To Quit Talking And Begin Doing.” – Walt Disney',
-    '“Security Is Mostly A Superstition. Life Is Either A Daring Adventure Or Nothing.” – Life Quote By Helen Keller',
-    '“The Pessimist Sees Difficulty In Every Opportunity. The Optimist Sees Opportunity In Every Difficulty.” – Winston Churchill',
-    '“Don’t Let Yesterday Take Up Too Much Of Today.” – Will Rogers',
-    '“You Learn More From Failure Than From Success. Don’t Let It Stop You. Failure Builds Character.” – Unknown',
-    '“If You Are Working On Something That You Really Care About, You Don’t Have To Be Pushed. The Vision Pulls You.” – Steve Jobs',
-)
+# quotes = (
+#     '“We May Encounter Many Defeats But We Must Not Be Defeated.” – Maya Angelou',
+#     '“The Way Get Started Is To Quit Talking And Begin Doing.” – Walt Disney',
+#     '“Security Is Mostly A Superstition. Life Is Either A Daring Adventure Or Nothing.” – Life Quote By Helen Keller',
+#     '“The Pessimist Sees Difficulty In Every Opportunity. The Optimist Sees Opportunity In Every Difficulty.” – Winston Churchill',
+#     '“Don’t Let Yesterday Take Up Too Much Of Today.” – Will Rogers',
+#     '“You Learn More From Failure Than From Success. Don’t Let It Stop You. Failure Builds Character.” – Unknown',
+#     '“If You Are Working On Something That You Really Care About, You Don’t Have To Be Pushed. The Vision Pulls You.” – Steve Jobs',
+# )
 
 
 @app.route('/', methods=["GET", "POST"])
-def gfg():
+def load_page():
+    search_query = ""
+    if request.method == 'POST':
+        search_query = request.form.get("search_query", None)
+
+    def query_database(search_query):
+        jdb = Jumbo()
+        term = jdb.wikipedia.search("wikipedia_docs_full", query={"match": {"content": f"{search_query}"}})
+        return term
+
+    if search_query:
+        search_query = query_database(search_query)
+        print(search_query.keys())
+        return render_template('website.html', search_query=search_query)
+    return render_template('website.html')
+
     return render_template("website.html")
 
 
