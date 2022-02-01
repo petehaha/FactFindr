@@ -38,7 +38,6 @@ def load_page():
 
     if search_query:
         search_query = query_database(search_query)
-        print(type(search_query["hits"]))
         return render_template('website.html', search_query=search_query["hits"]["hits"][0]["_source"])
     return render_template('website.html')
 
