@@ -41,7 +41,7 @@
                 {% if search_query %}
                     <h3>Search Results:</h3>
                     {% autoescape false %}
-                        {{search_query}}
+                        {{search_query.decode("unicode-escape")}}
                     {% endautoescape %}
                 {% else %}
                 {% endif %}
