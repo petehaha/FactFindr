@@ -39,7 +39,10 @@
                     <button>Search</button>
                 </form>
                 {% if search_query %}
-                  Search Returns: {{ search_query }}!
+                  Search Results: <br>
+                    {% autoescape false %}
+                        {{search_query}}
+                    {% endautoescape %}
                 {% else %}
                 {% endif %}
             </section>
