@@ -25,7 +25,7 @@ def load_page():
         value_from_database = query_database(search_query)
 
         if len(value_from_database["hits"]["hits"]) == 0:
-            return render_template('website.html', search_query="No Results Found.")
+            return render_template('website.html', search_query="No Results Found.".encode('utf-8'))
 
         results = []
         resultString = ""
