@@ -25,7 +25,7 @@ def load_page():
         value_from_database = query_database(search_query)
 
         if len(value_from_database["hits"]["hits"]) == 0:
-            return render_template('website.html', search_query="No Results Found.".encode('utf-8'))
+            return render_template('website.html', search_query="No Results Found.")
 
         results = []
         resultString = ""
@@ -33,10 +33,10 @@ def load_page():
         for value in value_from_database["hits"]["hits"]:
             results.append(value["_source"])
             resultString += json.dumps(value["_source"]) + "<br><br>"
-        return render_template('website.html', search_query=resultString.encode('utf-8'))
+        return render_template('website.html', search_query=resultString)
 
     return render_template('website.html')
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(port=5060)
+    app.run(port=5000)
