@@ -46,3 +46,7 @@ p {
 svg {
   padding-left: 35vw;
 }
+
+body {
+    background-color: bisque;
+}
