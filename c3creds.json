@@ -1,9 +1,0 @@
-{
-  "data_sources": {
-    "wikipedia": {
-	"uri": "http://167.172.138.10:9200",
-	"username": "cs338",
-	"password": "winter2022secretkey"
-    }
-  }
-}
