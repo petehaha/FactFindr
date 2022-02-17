@@ -33,5 +33,5 @@ python3 app.py
 work. Just use whichever one doesn't cause an error.)
 
 After that, you should be able to naviagate to the URL address
-`http://127.0.0.1:5060/`, and access the site.
+`http://127.0.0.1:5000/`, and access the site.
     
