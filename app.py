@@ -33,6 +33,10 @@ def load_page():
     def query_database(search_query):
         jdb = Jumbo()
         title_array = query_preprocessing_title(search_query, nlp)
+        if len(title_array) == 1:
+            pass
+        else:
+            title_array = "(" + ") AND (".join(title_array) + ")"
         term = jdb.wikipedia.search("wikipedia_docs_full",
                                     query={"bool": {
                                             "must": {"match": {"content": f"{search_query}"}},  # Content Search
