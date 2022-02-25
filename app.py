@@ -15,12 +15,17 @@ headers = {
 # initializes flask app:
 app = Flask(__name__, template_folder='templates')
 
+
 @app.route('/', methods=["GET", "POST"])
 def load_page():
-
     def query_database(search_query):
         jdb = Jumbo()
-        term = jdb.wikipedia.search("wikipedia_docs_full", query={"match": {"content": f"{search_query}"}})
+        term = jdb.wikipedia.search("wikipedia_docs_full",
+                                    query={"bool": {
+                                            "must": {"match": {"content": f"{search_query}"}},  # Content Search
+                                            "filter": {"query_string": {"query": "and",  # Title Search
+                                                                        "default_field": "title"}}
+                                    }})
         return term
 
     search_query = ""
@@ -40,10 +45,11 @@ def load_page():
         for index, value in enumerate(value_from_database["hits"]["hits"]):
             value = value["_source"]
             title.append(value["title"].replace(" ", "_"))
-
+            print(value)
             # Query API for view counts
             wikipediaReturn = requests.get('https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/'
-                         f'en.wikipedia/all-access/all-agents/{title[index]}/monthly/2021010100/2021123100', headers=headers)
+                                           f'en.wikipedia/all-access/all-agents/{title[index]}/monthly/2021010100/2021123100',
+                                           headers=headers)
             wikipediaReturn = json.loads(wikipediaReturn.text)
 
             pageViewCountForJanuary = wikipediaReturn["items"][0]["views"]
@@ -57,6 +63,7 @@ def load_page():
 
         return render_template('website.html', search_query=resultString.encode())
     return render_template('website.html')
+
 
 if __name__ == "__main__":
     app.debug = True
