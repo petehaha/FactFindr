@@ -6,6 +6,7 @@ import json
 import random
 import requests
 from pprint import pprint
+import spacy
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -14,16 +15,28 @@ headers = {
 
 # initializes flask app:
 app = Flask(__name__, template_folder='templates')
+nlp = spacy.load("en_core_web_sm")
+
+def query_preprocessing_title(search_query, nlp):
+     doc = nlp(search_query)
+     
+     # pulling out entities will help with title search
+     entity_array = []
+     for ent in doc.ents:
+        entity_array.append(ent.text) 
+     print(entity_array)
+     return entity_array
 
 
 @app.route('/', methods=["GET", "POST"])
 def load_page():
     def query_database(search_query):
         jdb = Jumbo()
+        title_array = query_preprocessing_title(search_query, nlp)
         term = jdb.wikipedia.search("wikipedia_docs_full",
                                     query={"bool": {
                                             "must": {"match": {"content": f"{search_query}"}},  # Content Search
-                                            "filter": {"query_string": {"query": "and",  # Title Search
+                                            "filter": {"query_string": {"query": title_array[0],  # Title Search
                                                                         "default_field": "title"}}
                                     }})
         return term
