@@ -9,19 +9,48 @@ from pprint import pprint
 import spacy
 
 nlp = spacy.load("en_core_web_sm")
+
+
 def preprocessing_content(text):
-    # To process the text, we're using the small English model, which was trained
-    # on a corpus of general-purpose news and web text. See here for details:
-    # https://spacy.io/models/en#en_core_web_sm
-    
+    template = text
 
-    # Here's our original text that we want to rephrase.
-
-
-    # This is the template we want to fill based on the original text. The subject
-    # of the original sentence becomes an object attached to "love".
+    # TEMPLATE ANSWERS FOR HOW QUESTIONS
+    substring_how = "how"
+    substring_many = "many"
+    substring_old = "old"
     template_how_many = "{subject} {verb} {obj} {noun}"
-    #template = "Couldn't agree more, but I would add that I sincerely love {subject}, because {pronoun} {verb} {obj}."
+    template_how_old = "{subject} {verb} years old"
+    if substring_how in text.lower():
+        if substring_many in text.lower():
+            template = template_how_many
+        if substring_old in text.lower():
+            template = template_how_old
+
+    # TEMPLATE ANSWERS FOR WHERE QUESTIONS
+    substring_where = "where"
+    substring_born = "born"
+    template_where = "{subject} {verb} located"
+    template_born = "{subject} was {verb}"
+    if substring_where in text.lower():
+        template = template_where
+        if substring_born in text.lower():
+            template = template_born
+
+    # TEMPLATE ANSWERS FOR WHO QUESTIONS
+    substring_who = "who"
+    substring_is = "is"
+    template_who_is = "{subject} {verb}"
+    template_who_did = "{verb} {obj}"
+    if substring_who in text.lower():
+        template = template_who_did
+        if substring_is in text.lower():
+            template = template_who_is
+
+    # TEMPLATE ANSWERS FOR WHY QUESTIONS
+    substring_why = "why"
+    template_why = "{subject} {verb} because"
+    if substring_why in text.lower():
+        template = template_why
 
     # Calling the nlp object on a string of text returns a processed Doc object,
     # which gives us access to the individual tokens (words, punctuation) and their
@@ -32,11 +61,10 @@ def preprocessing_content(text):
 
     def get_root(doc):
         # Based on a processed document, we want to find the syntactic root of the
-        # sentence. For this example, that should be the verb "are".
+        # sentence (verb)
         for token in doc:
             if token.dep_ == "ROOT":
                 return token
-
 
     def get_subject(root):
         # If we know the root of the sentence, we can use it to find its subject.
@@ -52,15 +80,10 @@ def preprocessing_content(text):
                 return token
 
     def get_object(root):
-        # We also need to look for the object attached to the root. In this case,
-        # the dependency parser predicted the object we're looking for ("canvas")
-        # as "attr" (attribute), so we're using that. There are various other
-        # options, though, so if you want to generalise this script, you'd probably
-        # want to check for those as well.
+        # We also need to look for the object attached to the root.
         for token in root.children:
             if token.dep_ == "dobj":
                 return token
-
 
     def get_pronoun(token):
         # Based on the subject token, we need to decide which pronoun to use.
@@ -73,25 +96,16 @@ def preprocessing_content(text):
         # simplicity, we just mock this up here and always use "they".
         return "they"
 
-
     def get_subtree(token):
-        # Here, we are getting the subtree of a token – for example, if we know
-        # that "noodles" is the subject, we can resolve it to the full phrase
-        # "These generously buttered noodles, sprinkled with just a quarter cup of
-        # parsley for color and freshness".
+        if token.subtree is not None:
+            subtree = [t.text_with_ws for t in token.subtree]
+            subtree = "".join(subtree)
 
-        # spaCy preserves the whitespace following a token in the `text_with_ws`
-        # attribute. This means you'll alwas be able to restore the original text.
-        # For example: "Hello world!" (good) vs. "Hello world !" (bad).
-        subtree = [t.text_with_ws for t in token.subtree]
-        subtree = "".join(subtree)
-
-        # Since our template will place the subject and object in the middle of a
-        # sentence, we also want to make sure that the first token starts with a
-        # lowercase letter – otherwise we'll end up with things like "love These".
-        subtree = subtree[0].lower() + subtree[1:]
+            # Since our template will place the subject and object in the middle of a
+            # sentence, we also want to make sure that the first token starts with a
+            # lowercase letter
+            subtree = subtree[0].lower() + subtree[1:]
         return subtree
-
 
     # Let's put this all together!
     root = get_root(doc)
@@ -109,24 +123,38 @@ def preprocessing_content(text):
     noun = get_noun(root)
     print("Noun:", noun)
 
-    subject_subtree = get_subtree(subject)
-    print("Subject subtree:", subject_subtree)
+    if subject is not None:
+        subject_subtree = get_subtree(subject).lower()
+        print("Subject subtree:", subject_subtree)
+    else:
+        subject_subtree = None
 
-    object_subtree = get_subtree(obj)
-    print("Object subtree:", object_subtree)
+    if obj is not None:
+        object_subtree = get_subtree(obj)
+        print("Object subtree:", object_subtree)
+    else:
+        object_subtree = None
 
-    noun_subtree = get_subtree(noun)
-    print("Noun subtree:", noun_subtree)
+    if noun is not None:
+        noun_subtree = get_subtree(noun)
+        print("Noun subtree:", noun_subtree)
+    else:
+        noun_subtree = None
 
     print("Result:")
-    template_how_many_str = template_how_many.format(subject=subject_subtree,
-                                                    pronoun=subject_pronoun,
-                                                    verb=root.text,
-                                                    obj=object_subtree,
-                                                    noun=noun) 
-    
-    #print (template_how_many_str.split())
-    return template_how_many_str.split()
+
+    if template != text:
+        template = template.format(subject=subject_subtree,
+                                   pronoun=subject_pronoun,
+                                   verb=root.text,
+                                   obj=object_subtree,
+                                   noun=noun)
+    else:
+        pass
+
+    print(template.split())
+
+    return template.split()
 
 
 headers = {
@@ -137,15 +165,16 @@ headers = {
 # initializes flask app:
 app = Flask(__name__, template_folder='templates')
 
+
 def query_preprocessing_title(search_query, nlp):
-     doc = nlp(search_query)
-     
-     # pulling out entities will help with title search
-     entity_array = []
-     for ent in doc.ents:
-        entity_array.append(ent.text) 
-     print(entity_array)
-     return entity_array
+    doc = nlp(search_query)
+
+    # pulling out entities will help with title search
+    entity_array = []
+    for ent in doc.ents:
+        entity_array.append(ent.text)
+    print(entity_array)
+    return entity_array
 
 
 @app.route('/', methods=["GET", "POST"])
@@ -157,17 +186,19 @@ def load_page():
             title_str = title_array[0]
         else:
             title_str = "(" + ") AND (".join(title_array) + ")"
-        
+            print("Title String:", title_str)
+
         content_array = preprocessing_content(search_query)
         if len(content_array) == 1:
             content_str = content_array[0]
         else:
             content_str = "(" + ") AND (".join(content_array) + ")"
+            print(content_str)
         term = jdb.wikipedia.search("wikipedia_docs_full",
                                     query={"bool": {
-                                            "must": {"match": {"content": f"{content_str}"}},  # Content Search
-                                            "filter": {"query_string": {"query": title_str,  # Title Search
-                                                                        "default_field": "title"}}
+                                        "must": {"match": {"content": content_str}},  # Content Search
+                                        "filter": {"query_string": {"query": title_str,  # Title Search
+                                                                    "default_field": "title"}}
                                     }})
         return term
 

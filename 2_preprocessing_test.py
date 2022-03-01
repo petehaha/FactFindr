@@ -8,10 +8,11 @@ text_who_is = "Who is Donald Trump?"
 text_who_did = "Who created Bitcoin?"
 text_why = "Why did the Roman Empire collapse?"
 
+nlp = spacy.load("en_core_web_sm")
 
 def preprocessing_content(text):
     
-    nlp = spacy.load("en_core_web_sm")
+    template = text
 
     #TEMPLATE ANSWERS FOR HOW QUESTIONS
     substring_how = "how"
@@ -149,12 +150,15 @@ def preprocessing_content(text):
 
     print("Result:")
     
-
-    template = template.format(subject=subject_subtree,
+    if template != text:
+        template = template.format(subject=subject_subtree,
                                                     pronoun=subject_pronoun,
                                                     verb=root.text,
                                                     obj=object_subtree,
                                                     noun=noun)
+    else:
+        pass
+
     print (template.split())
 
     return template.split()
