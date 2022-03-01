@@ -40,9 +40,9 @@
                 </form>
                 {% if search_query %}
                     <h3>Search Results:</h3>
-                    {% autoescape false %}
+                    <h4>{% autoescape false %}
                         {{search_query.decode("unicode-escape")}}
-                    {% endautoescape %}
+                    {% endautoescape %}</h4>
                 {% else %}
                 {% endif %}
             </section>
