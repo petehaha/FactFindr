@@ -233,8 +233,10 @@ def load_page():
             value["view_count"] = pageViewCountForJanuary
             results.append(value)
 
+        results = sorted(results, key = lambda i: i['view_count'],reverse=True)
 
-            resultString += json.dumps(value) + "<br><br>" 
+        for val in results: 
+            resultString += json.dumps(val) + "<br><br>" 
             
 
         return render_template('website.html', search_query=resultString.encode())
