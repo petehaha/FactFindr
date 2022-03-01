@@ -197,7 +197,7 @@ def load_page():
         term = jdb.wikipedia.search("wikipedia_docs_full",
                                     query={"bool": {
                                         "must": {"match": {"content": content_str}},  # Content Search
-                                        "filter": {"query_string": {"query": title_str,  # Title Search
+                                        "must": {"query_string": {"query": title_str,  # Title Search
                                                                     "default_field": "title"}}
                                     }})
         return term
