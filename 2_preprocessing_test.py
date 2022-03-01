@@ -1,20 +1,59 @@
 import spacy
 
-text = "How many times did Brad Pitt get married?"
+text_how_many = "How many times did Northwestern beat Michigan State at football?"
+text_how_old = "How old was Betty White before she died?" 
+text_where_is = "Where is Northwestern University?"
+text_where_born = "Where was Michael Jackson born?" 
+text_who_is = "Who is Donald Trump?"
+text_who_did = "Who created Bitcoin?"
+text_why = "Why did the Roman Empire collapse?"
+
+
 def preprocessing_content(text):
-    # To process the text, we're using the small English model, which was trained
-    # on a corpus of general-purpose news and web text. See here for details:
-    # https://spacy.io/models/en#en_core_web_sm
+    
     nlp = spacy.load("en_core_web_sm")
 
-    # Here's our original text that we want to rephrase.
-
-
-    # This is the template we want to fill based on the original text. The subject
-    # of the original sentence becomes an object attached to "love".
+    #TEMPLATE ANSWERS FOR HOW QUESTIONS
+    substring_how = "how"
+    substring_many = "many"
+    substring_old = "old"
     template_how_many = "{subject} {verb} {obj} {noun}"
-    #template = "Couldn't agree more, but I would add that I sincerely love {subject}, because {pronoun} {verb} {obj}."
+    template_how_old = "{subject} {verb} years old"
+    if substring_how in text.lower():
+        if substring_many in text.lower():
+            template = template_how_many
+        if substring_old in text.lower():
+            template = template_how_old
+    
 
+    #TEMPLATE ANSWERS FOR WHERE QUESTIONS
+    substring_where = "where"
+    substring_born = "born"
+    template_where = "{subject} {verb} located"
+    template_born = "{subject} was {verb}"
+    if substring_where in text.lower():
+        template = template_where
+        if substring_born in text.lower():
+            template = template_born
+
+    #TEMPLATE ANSWERS FOR WHO QUESTIONS
+    substring_who = "who"
+    substring_is = "is"
+    template_who_is = "{subject} {verb}"
+    template_who_did = "{verb} {obj}"
+    if substring_who in text.lower():
+        template = template_who_did
+        if substring_is in text.lower():
+            template = template_who_is
+
+    #TEMPLATE ANSWERS FOR WHY QUESTIONS
+    substring_why = "why"
+    template_why = "{subject} {verb} because"
+    if substring_why in text.lower():
+        template = template_why
+
+
+    
     # Calling the nlp object on a string of text returns a processed Doc object,
     # which gives us access to the individual tokens (words, punctuation) and their
     # linguistic annotations (part-of-speech tags, dependency labels) predicted
@@ -24,7 +63,7 @@ def preprocessing_content(text):
 
     def get_root(doc):
         # Based on a processed document, we want to find the syntactic root of the
-        # sentence. For this example, that should be the verb "are".
+        # sentence (verb)
         for token in doc:
             if token.dep_ == "ROOT":
                 return token
@@ -44,11 +83,7 @@ def preprocessing_content(text):
                 return token
 
     def get_object(root):
-        # We also need to look for the object attached to the root. In this case,
-        # the dependency parser predicted the object we're looking for ("canvas")
-        # as "attr" (attribute), so we're using that. There are various other
-        # options, though, so if you want to generalise this script, you'd probably
-        # want to check for those as well.
+        # We also need to look for the object attached to the root. 
         for token in root.children:
             if token.dep_ == "dobj":
                 return token
@@ -67,21 +102,14 @@ def preprocessing_content(text):
 
 
     def get_subtree(token):
-        # Here, we are getting the subtree of a token – for example, if we know
-        # that "noodles" is the subject, we can resolve it to the full phrase
-        # "These generously buttered noodles, sprinkled with just a quarter cup of
-        # parsley for color and freshness".
-
-        # spaCy preserves the whitespace following a token in the `text_with_ws`
-        # attribute. This means you'll alwas be able to restore the original text.
-        # For example: "Hello world!" (good) vs. "Hello world !" (bad).
-        subtree = [t.text_with_ws for t in token.subtree]
-        subtree = "".join(subtree)
+        if token.subtree is not None:
+            subtree = [t.text_with_ws for t in token.subtree]
+            subtree = "".join(subtree)
 
         # Since our template will place the subject and object in the middle of a
         # sentence, we also want to make sure that the first token starts with a
-        # lowercase letter – otherwise we'll end up with things like "love These".
-        subtree = subtree[0].lower() + subtree[1:]
+        # lowercase letter
+            subtree = subtree[0].lower() + subtree[1:]
         return subtree
 
 
@@ -101,26 +129,43 @@ def preprocessing_content(text):
     noun = get_noun(root)
     print("Noun:", noun)
 
-    subject_subtree = get_subtree(subject)
-    print("Subject subtree:", subject_subtree)
+    if subject is not None:
+        subject_subtree = get_subtree(subject).lower()
+        print("Subject subtree:", subject_subtree)
+    else:
+        subject_subtree = None
 
-    object_subtree = get_subtree(obj)
-    print("Object subtree:", object_subtree)
+    if obj is not None:
+        object_subtree = get_subtree(obj)
+        print("Object subtree:", object_subtree)
+    else:
+        object_subtree = None
 
-    noun_subtree = get_subtree(noun)
-    print("Noun subtree:", noun_subtree)
+    if noun is not None:
+        noun_subtree = get_subtree(noun)
+        print("Noun subtree:", noun_subtree)
+    else:
+        noun_subtree = None
 
     print("Result:")
-    template_how_many_str = template_how_many.format(subject=subject_subtree,
+    
+
+    template = template.format(subject=subject_subtree,
                                                     pronoun=subject_pronoun,
                                                     verb=root.text,
                                                     obj=object_subtree,
-                                                    noun=noun) 
-    
-    print (template_how_many_str.split())
-    return template_how_many_str.split()
+                                                    noun=noun)
+    print (template.split())
+
+    return template.split()
 
 
-preprocessing_content(text)
+preprocessing_content(text_how_many)
+preprocessing_content(text_how_old)
+preprocessing_content(text_where_is)
+preprocessing_content(text_where_born)
+preprocessing_content(text_who_is)
+preprocessing_content(text_who_did)
+preprocessing_content(text_why)
 
-  
+
