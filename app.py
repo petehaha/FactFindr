@@ -231,6 +231,9 @@ def load_page():
             value["view_count"] = pageViewCountForJanuary
             results.append(value)
 
+        results = sorted(results, key = lambda i: i['view_count'],reverse=True)
+
+        for value in results: 
             curr_title = (json.dumps(list(value.values())[0])).strip('\"')
             curr_link = (json.dumps(list(value.values())[1])).strip('\"')
             curr_body = (json.dumps(list(value.values())[2])).strip('\"')
@@ -243,7 +246,8 @@ def load_page():
                 <div class="articleBody">
                     {curr_body}
                 </div>
-            </div> <br><br>""" 
+            </div> <br><br>"""  
+            
 
         return render_template('website.html', search_query=resultString.encode())
     return render_template('website.html')
