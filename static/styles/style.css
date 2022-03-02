@@ -49,22 +49,37 @@ svg {
 }
 
 body {
-    background-color: bisque;
+  background-color: bisque;
 }
 
 /* search results header */
 h3 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 15px;
-	color: #000000;
-	text-align: left;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  color: #000000;
+  text-align: left;
 }
 
 /* result dictionary */
 p {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
   font-weight: lighter;
-	color: #000000;
-	text-align: left;
+  color: #000000;
+  text-align: left;
+}
+.title {
+  display: flex;
+  padding-right: 5vw;
+}
+.articleBody {
+  display: flex;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: lighter;
+  color: #000000;
+  text-align: left;
+}
+.searchResult {
+  display: flex;
 }

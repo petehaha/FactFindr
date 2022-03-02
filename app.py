@@ -193,7 +193,6 @@ def load_page():
             content_str = content_array[0]
         else:
             content_str = "(" + ") AND (".join(content_array) + ")"
-            print(content_str)
         term = jdb.wikipedia.search("wikipedia_docs_full",
                                     query={"bool": {
                                         "must": {"match": {"content": content_str}},  # Content Search
@@ -219,7 +218,6 @@ def load_page():
         for index, value in enumerate(value_from_database["hits"]["hits"]):
             value = value["_source"]
             title.append(value["title"].replace(" ", "_"))
-            print(value)
             # Query API for view counts
             wikipediaReturn = requests.get('https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/'
                                            f'en.wikipedia/all-access/all-agents/{title[index]}/monthly/2021010100/2021123100',
@@ -233,9 +231,19 @@ def load_page():
             value["view_count"] = pageViewCountForJanuary
             results.append(value)
 
-
-            resultString += json.dumps(value) + "<br><br>" 
-            
+            curr_title = (json.dumps(list(value.values())[0])).strip('\"')
+            curr_link = (json.dumps(list(value.values())[1])).strip('\"')
+            curr_body = (json.dumps(list(value.values())[2])).strip('\"')
+            resultString += f"""
+            <div class="searchResult"> 
+                <div class="title">
+                    <a href="{curr_link}" target="_blank">{curr_title}</a>
+                    
+                </div>
+                <div class="articleBody">
+                    {curr_body}
+                </div>
+            </div> <br><br>""" 
 
         return render_template('website.html', search_query=resultString.encode())
     return render_template('website.html')
