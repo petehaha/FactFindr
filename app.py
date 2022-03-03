@@ -254,7 +254,7 @@ def load_page():
     return render_template('website.html')
 def split_article(article):
         splitArticle = article.split('\\n')
-        curr_body = curr_body[0]
+        return splitArticle[0]
 
 if __name__ == "__main__":
     app.debug = True
