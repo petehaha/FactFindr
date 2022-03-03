@@ -236,7 +236,8 @@ def load_page():
         for value in results: 
             curr_title = (json.dumps(list(value.values())[0])).strip('\"')
             curr_link = (json.dumps(list(value.values())[1])).strip('\"')
-            curr_body = (json.dumps(list(value.values())[2])).strip('\"')
+            curr_body = split_article((json.dumps(list(value.values())[2])).strip('\"'))
+
             resultString += f"""
             <div class="searchResult"> 
                 <div class="title">
@@ -251,7 +252,9 @@ def load_page():
 
         return render_template('website.html', search_query=resultString.encode())
     return render_template('website.html')
-
+def split_article(article):
+        splitArticle = article.split('\\n')
+        curr_body = curr_body[0]
 
 if __name__ == "__main__":
     app.debug = True
