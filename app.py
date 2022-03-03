@@ -7,6 +7,8 @@ import random
 import requests
 from pprint import pprint
 import spacy
+import urllib.parse
+import html
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -193,12 +195,18 @@ def load_page():
             content_str = content_array[0]
         else:
             content_str = "(" + ") AND (".join(content_array) + ")"
-        term = jdb.wikipedia.search("wikipedia_docs_full",
+        if title_str == "()":
+            term = jdb.wikipedia.search("wikipedia_docs_full",
+                                        query={"match": {"content": content_str}}  # Content Search
+                                        )
+        else:
+            term = jdb.wikipedia.search("wikipedia_docs_full",
                                     query={"bool": {
                                         "must": {"match": {"content": content_str}},  # Content Search
                                         "must": {"query_string": {"query": title_str,  # Title Search
                                                                     "default_field": "title"}}
                                     }})
+
         return term
 
     search_query = ""
@@ -220,7 +228,7 @@ def load_page():
             title.append(value["title"].replace(" ", "_"))
             # Query API for view counts
             wikipediaReturn = requests.get('https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/'
-                                           f'en.wikipedia/all-access/all-agents/{title[index]}/monthly/2021010100/2021123100',
+                                           f'en.wikipedia/all-access/all-agents/{urllib.parse.quote_plus(html.unescape(title[index]))}/monthly/2021010100/2021123100',
                                            headers=headers)
             wikipediaReturn = json.loads(wikipediaReturn.text)
 
