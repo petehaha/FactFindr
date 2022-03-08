@@ -2,14 +2,18 @@
 
 from flask import Flask, request, render_template
 from jumbodb import Jumbo
-from preprocessing import preprocessing_content, query_preprocessing_title
+from preprocessing_content import preprocessing_content
+from preprocessing_title import preprocessing_title
+from bm25_test import bm25_passage
 import json
 import random
 import requests
 from pprint import pprint
 import urllib.parse
 import html
+import spacy
 
+nlp = spacy.load("en_core_web_sm")
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -24,7 +28,7 @@ app = Flask(__name__, template_folder='templates')
 def load_page():
     def query_database(search_query):
         jdb = Jumbo()
-        title_array = query_preprocessing_title(search_query)
+        title_array = preprocessing_title(search_query, nlp)
         if len(title_array) == 1:
             title_str = title_array[0]
         else:
@@ -85,7 +89,7 @@ def load_page():
         for value in results: 
             curr_title = (json.dumps(list(value.values())[0])).strip('\"')
             curr_link = (json.dumps(list(value.values())[1])).strip('\"')
-            curr_body = split_article((json.dumps(list(value.values())[2])).strip('\"'))
+            curr_body = split_article((json.dumps(list(value.values())[2])).strip('\"'), search_query)
 
             resultString += f"""
             <div class="searchResult"> 
@@ -101,9 +105,11 @@ def load_page():
 
         return render_template('website.html', search_query=resultString.encode())
     return render_template('website.html')
-def split_article(article):
+
+def split_article(article, search_query):
         splitArticle = article.split('\\n')
-        return splitArticle[0]
+        passage_list = bm25_passage(splitArticle, search_query)
+        return passage_list
 
 if __name__ == "__main__":
     app.debug = True
