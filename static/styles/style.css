@@ -71,6 +71,7 @@ p {
 .title {
   display: flex;
   padding-right: 5vw;
+  width: 15vw;
   font-size: 11px;
   font-family: Verdana, Arial, Helvetica, sans-serif;
 }
@@ -81,7 +82,12 @@ p {
   font-weight: lighter;
   color: #000000;
   text-align: left;
+  width: 75vw;
+  padding-right: 5vw;
 }
 .searchResult {
   display: flex;
+}
+.titleLink {
+  width: 100%;
 }
