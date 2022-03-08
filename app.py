@@ -241,7 +241,7 @@ def load_page():
             resultString += f"""
             <div class="searchResult"> 
                 <div class="title">
-                    <a href="{curr_link}" target="_blank">{curr_title}</a>
+                    <a class="titleLink" href="{curr_link}" target="_blank">{curr_title}</a>
                     
                 </div>
                 <div class="articleBody">
