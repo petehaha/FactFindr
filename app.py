@@ -89,7 +89,10 @@ def load_page():
         for value in results: 
             curr_title = (json.dumps(list(value.values())[0])).strip('\"')
             curr_link = (json.dumps(list(value.values())[1])).strip('\"')
-            curr_body = split_article((json.dumps(list(value.values())[2])).strip('\"'), search_query)
+            article = (list(value.values())[2])
+            curr_body = split_article(article, search_query).strip('\"')
+
+    
 
             resultString += f"""
             <div class="searchResult"> 
@@ -107,9 +110,15 @@ def load_page():
     return render_template('website.html')
 
 def split_article(article, search_query):
+        passage_string = " "
+
+        article = (json.dumps(article))
         splitArticle = article.split('\\n')
         passage_list = bm25_passage(splitArticle, search_query)
-        return passage_list
+
+        for passage in passage_list:
+            passage_string += " " + passage
+        return passage_string
 
 if __name__ == "__main__":
     app.debug = True

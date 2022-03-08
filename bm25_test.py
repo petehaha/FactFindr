@@ -12,6 +12,6 @@ def bm25_passage(passage_list, search_query):
     doc_scores = bm25.get_scores(tokenized_query)
     # array([0.        , 0.93729472, 0.        ])
 
-    return bm25.get_top_n(tokenized_query, passage_list, n=3)
+    return bm25.get_top_n(tokenized_query, passage_list, n=2)
     # ['It is quite windy in London']
 
