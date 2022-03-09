@@ -117,7 +117,7 @@ def split_article(article, search_query):
         passage_list = bm25_passage(splitArticle, search_query)
 
         for passage in passage_list:
-            passage_string += " " + passage
+            passage_string += passage + "<br><br>"
         return passage_string
 
 if __name__ == "__main__":
