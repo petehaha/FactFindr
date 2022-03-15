@@ -2,13 +2,11 @@
 
 from flask import Flask, request, render_template
 from jumbodb import Jumbo
-from preprocessing_content import preprocessing_content
-from preprocessing_title import preprocessing_title
-from bm25_test import bm25_passage
+from preproccessing import preprocessing_content
+from preproccessing import preprocessing_title
+from postprocessing.bm25 import bm25_passage
 import json
-import random
 import requests
-from pprint import pprint
 import urllib.parse
 import html
 import spacy
