@@ -49,8 +49,8 @@ svg {
 }
 
 body {
-  background-color: bisque;
-}
+  background-color: #a8c1c2;
+} /*9bbfc0*/
 
 /* search results header */
 h3 {
@@ -90,4 +90,17 @@ p {
 }
 .titleLink {
   width: 100%;
+}
+.logo {
+  display: flex;
+  background-color: transparent;
+  width: 300px;
+  height: 300px;
+  border: 0;
+}
+.logoContainer {
+  height: 250px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
 }

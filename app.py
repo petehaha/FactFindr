@@ -57,7 +57,8 @@ def load_page():
     search_query = ""
     if request.method == 'POST':
         search_query = request.form.get("search_query", None)
-
+    search_query_orig=search_query
+    print('search query: ', search_query_orig)
     if search_query:  # This is run when the search query is changed
         value_from_database = query_database(search_query)
 
@@ -106,7 +107,7 @@ def load_page():
             </div> <br><br>"""  
             
 
-        return render_template('website.html', search_query=resultString.encode())
+        return render_template('website.html', search_query=resultString.encode(), original_search=search_query_orig)
     return render_template('website.html')
 
 def split_article(article, search_query):
@@ -114,6 +115,15 @@ def split_article(article, search_query):
 
         article = (json.dumps(article))
         splitArticle = article.split('\\n')
+        # for i in range(len (splitArticle) -2):
+        #    ## if(splitArticle[i])
+        #    print(splitArticle[i])
+        #    if(len(splitArticle[i]) < 100 and len(splitArticle) > (i-2)):
+        #        print('in splitting')
+        #        print(splitArticle[i])
+        #        splitArticle[i:i+2] = [''.join(splitArticle[i:i+2])] 
+        #        print(splitArticle[i])
+        #     #print('printing, ', len(splitArticle[i]))
         passage_list = bm25_passage(splitArticle, search_query)
 
         for passage in passage_list:
