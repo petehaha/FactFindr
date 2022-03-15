@@ -36,10 +36,10 @@ input {
   width: 50vw;
 }
 h2 {
-  padding-left: 30vw;
+  /*padding-left: 30vw;*/
   /*padding-top: 5vh;
   padding-bottom: 2vh;*/
-  align-self: center;
+  text-align: center;
   font-size: 30pt;
   font-weight: bold;
   color: #073763;
