@@ -101,39 +101,39 @@ def preprocessing_content(text):
 
     # Let's put this all together!
     root = get_root(doc)
-    print("Root:", root)
+    # print("Root:", root)
 
     subject = get_subject(root)
-    print("Subject:", subject)
+    # print("Subject:", subject)
 
     subject_pronoun = get_pronoun(subject)
-    print("Subject pronoun:", subject_pronoun)
+    # print("Subject pronoun:", subject_pronoun)
 
     obj = get_object(root)
-    print("Object:", obj)
+    # print("Object:", obj)
 
     noun = get_noun(root)
-    print("Noun:", noun)
+    # print("Noun:", noun)
 
     if subject is not None:
         subject_subtree = get_subtree(subject).lower()
-        print("Subject subtree:", subject_subtree)
+        # print("Subject subtree:", subject_subtree)
     else:
         subject_subtree = None
 
     if obj is not None:
         object_subtree = get_subtree(obj)
-        print("Object subtree:", object_subtree)
+        # print("Object subtree:", object_subtree)
     else:
         object_subtree = None
 
     if noun is not None:
         noun_subtree = get_subtree(noun)
-        print("Noun subtree:", noun_subtree)
+        # print("Noun subtree:", noun_subtree)
     else:
         noun_subtree = None
 
-    print("Result:")
+    # print("Result:")
 
     if template != text:
         template = template.format(subject=subject_subtree,
@@ -144,6 +144,6 @@ def preprocessing_content(text):
     else:
         pass
 
-    print(template.split())
+    # print(template.split())
 
     return template.split()

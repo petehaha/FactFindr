@@ -2,8 +2,8 @@
 
 from flask import Flask, request, render_template
 from jumbodb import Jumbo
-from preproccessing import preprocessing_content
-from preproccessing import preprocessing_title
+from preproccessing.preprocessing_content import preprocessing_content
+from preproccessing.preprocessing_title import preprocessing_title
 from postprocessing.bm25 import bm25_passage
 import json
 import requests
@@ -31,7 +31,7 @@ def load_page():
             title_str = title_array[0]
         else:
             title_str = "(" + ") AND (".join(title_array) + ")"
-            print("Title String:", title_str)
+            # print("Title String:", title_str)
 
         content_array = preprocessing_content(search_query)
         if len(content_array) == 1:
@@ -56,7 +56,7 @@ def load_page():
     if request.method == 'POST':
         search_query = request.form.get("search_query", None)
     search_query_orig=search_query
-    print('search query: ', search_query_orig)
+    # print('search query: ', search_query_orig)
     if search_query:  # This is run when the search query is changed
         value_from_database = query_database(search_query)
 

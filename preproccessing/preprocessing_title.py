@@ -34,7 +34,7 @@ def preprocessing_title(search_query, nlp):
     obj = get_object(root)
     if obj is not None:
         object_subtree = get_subtree(obj)
-        print("Object subtree:", object_subtree)
+        # print("Object subtree:", object_subtree)
     else:
         object_subtree = None
 
@@ -54,5 +54,5 @@ def preprocessing_title(search_query, nlp):
         entity_array = []
         for ent in doc.ents:
             entity_array.append(ent.text)
-        print(entity_array)
+        # print(entity_array)
         return entity_array

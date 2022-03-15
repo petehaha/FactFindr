@@ -29,16 +29,12 @@ form {
   display: flex;
   align-self: center;
   margin-left: 25vw;
-  /*margin-top: 40vh;*/
   width: 50vw;
 }
 input {
   width: 50vw;
 }
 h2 {
-  /*padding-left: 30vw;*/
-  /*padding-top: 5vh;
-  padding-bottom: 2vh;*/
   text-align: center;
   font-size: 30pt;
   font-weight: bold;
