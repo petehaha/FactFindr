@@ -5,9 +5,12 @@
 This assumes you have already setup the requirements for JumboDB
 and have credentials (c3creds.json).
 
-Activate the python (conda) environment you installed JumboDB to. 
+You can install necessary packages by from `requirements.txt` by typing ```pip install -r requirements.txt```
+on the command line.
+ 
+Once the packages have been installed, activate the python environment you installed the requirements to. 
 
-Before running the server, make sure you have set the environment
+_Before_ running the server, make sure you have set the environment
 variable `c3creds`. You can do this in MacOS with 
 ```
 export c3creds=</path/to/c3creds.json>
